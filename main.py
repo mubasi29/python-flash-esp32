@@ -1,24 +1,55 @@
 from kivy.app import App
-import serial.tools.list_ports
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.utils import platform
+import threading
 import esptool
 import sys
 
+if platform == 'android':
+    from usb4a import usb
+    from usbserial4a import serial4a
+else:
+    from serial.tools import list_ports
+
 class DemoApp(App):
+    def __init__(self, *args, **kwargs):
+        self.uiDict = {}
+        self.device_name_list = []
+        self.serial_port = None
+        self.read_thread = None
+        self.port_thread_lock = threading.Lock()
+        self.on_scan_device()
+        super(DemoApp, self).__init__(*args, **kwargs)
+
     def build(self):
         layout = BoxLayout(orientation='vertical')
-
-        ports = serial.tools.list_ports.comports()
+        ports = self.device_name_list
+        print(ports)
         for btn_str in ports:
             button = Button(
-                text=f"{btn_str.device}",
+                text=f"{btn_str}",
                 size_hint=(None, None),
                 size=("280dp", "50dp"),
                 on_release=self.on_button_click
             )
             layout.add_widget(button)
         return layout
+
+    def on_scan_device(self):
+        if platform == 'android':
+            usb_device_list = usb.get_usb_device_list()
+            self.device_name_list = [
+                device.getDeviceName() for device in usb_device_list
+            ]
+        else:
+            usb_device_list = list_ports.comports()
+            self.device_name_list = [port.device for port in usb_device_list]
+
+    def on_stop(self):
+        if self.serial_port:
+            with self.port_thread_lock:
+                self.serial_port.close()
 
     def on_button_click(self, instance):
         port = instance.text
@@ -45,5 +76,5 @@ class DemoApp(App):
         except Exception as e:
             print(f"\nError flashing ESP32: {e}")
 
-demoApp = DemoApp()
-demoApp.run()
+if __name__ == '__main__':
+    DemoApp().run()
