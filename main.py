@@ -1,36 +1,24 @@
-from kivymd.app import MDApp
-from kivy.lang import Builder
+from kivy.app import App
 import serial.tools.list_ports
-from kivymd.uix.button import MDRectangleFlatButton
+from kivy.uix.button import Button
+from kivy.uix.boxlayout import BoxLayout
 import esptool
 import sys
 
-KV = '''
-BoxLayout:
-    orientation: "vertical"
-    MDLabel:
-        text: "Click a Button to Send String"
-        halign: "center"
-        theme_text_color: "Secondary"
-    ScrollView:
-        MDList:
-            id: button_list
-'''
-
-class DemoApp(MDApp):
+class DemoApp(App):
     def build(self):
-        return Builder.load_string(KV)
+        layout = BoxLayout(orientation='vertical')
 
-    def on_start(self):
         ports = serial.tools.list_ports.comports()
         for btn_str in ports:
-            button = MDRectangleFlatButton(
+            button = Button(
                 text=f"{btn_str.device}",
                 size_hint=(None, None),
                 size=("280dp", "50dp"),
                 on_release=self.on_button_click
             )
-            self.root.ids.button_list.add_widget(button)
+            layout.add_widget(button)
+        return layout
 
     def on_button_click(self, instance):
         port = instance.text
@@ -39,7 +27,6 @@ class DemoApp(MDApp):
         baud_rate = 115200
 
         try:
-            # Initialize the esptool arguments
             sys.argv = [
                 "esptool.py",
                 "--port",
@@ -48,11 +35,10 @@ class DemoApp(MDApp):
                 str(baud_rate),
                 "write_flash",
                 "-z",
-                "0x1000",
+                flash_address,
                 firmware_path,
             ]
 
-            # Execute the flashing process
             esptool.main()
             print("\nFlashing completed successfully!")
 
