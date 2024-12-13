@@ -87,7 +87,8 @@ class DemoApp(App):
     def on_button_click(self, instance):
         port = instance.text
         flash_address = "0x10000"
-        firmware_path = "/storage/emulated/0/Download/StatusSaverApp/firmware-custom-1.bin"
+        # firmware_path = "/storage/emulated/0/Download/StatusSaverApp/firmware-custom-1.bin"
+        firmware_path = "res/file/firmware-custom.bin"
         baud_rate = 115200
         
         if not os.path.exists(firmware_path):
