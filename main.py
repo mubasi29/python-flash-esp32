@@ -1,16 +1,22 @@
 from kivy.app import App
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.utils import platform
 import threading
 import esptool
 import sys
+import os
 
 if platform == 'android':
     from usb4a import usb
     from usbserial4a import serial4a
 else:
     from serial.tools import list_ports
+
+def request_permission():
+   from android.permissions import request_permissions, Permission
+   request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
 
 class DemoApp(App):
     def __init__(self, *args, **kwargs):
@@ -25,7 +31,10 @@ class DemoApp(App):
     def build(self):
         layout = BoxLayout(orientation='vertical')
         ports = self.device_name_list
-        print(ports)
+        
+        if len(ports) == 0:
+            layout.add_widget(Label(text = 'empty '))
+            
         for btn_str in ports:
             button = Button(
                 text=f"{btn_str}",
@@ -54,8 +63,14 @@ class DemoApp(App):
     def on_button_click(self, instance):
         port = instance.text
         flash_address = "0x10000"
-        firmware_path = r".\firmware-custom.bin"
+        firmware_path = "/storage/emulated/0/Download/StatusSaverApp/firmware-custom-1.bin"
         baud_rate = 115200
+        
+        if not os.path.exists(firmware_path):
+        	print(firmware_path)
+        	print("\nfile not exits")
+        	return
+        
 
         try:
             sys.argv = [
@@ -77,4 +92,5 @@ class DemoApp(App):
             print(f"\nError flashing ESP32: {e}")
 
 if __name__ == '__main__':
+    request_permission()
     DemoApp().run()
