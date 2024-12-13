@@ -1,3 +1,4 @@
+import autoclass
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -15,8 +16,9 @@ else:
     from serial.tools import list_ports
 
 def request_permission():
-   from android.permissions import request_permissions, Permission
-   request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+    if platform == 'android':
+       from android.permissions import request_permissions, Permission
+       request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
 
 class DemoApp(App):
     def __init__(self, *args, **kwargs):
@@ -34,6 +36,12 @@ class DemoApp(App):
         
         if len(ports) == 0:
             layout.add_widget(Label(text = 'empty '))
+
+        # if platform == "android":
+        #     # Android-specific UI
+        #     button = Button(text="Select File (Android)")
+        #     button.bind(on_press=self.select_android_file)
+        #     layout.add_widget(button)
             
         for btn_str in ports:
             button = Button(
@@ -59,6 +67,22 @@ class DemoApp(App):
         if self.serial_port:
             with self.port_thread_lock:
                 self.serial_port.close()
+
+
+    def select_android_file(self, instance):
+        self.open_file_picker()
+
+
+    def open_file_picker(self):
+        PythonActivity = autoclass("org.kivy.android.PythonActivity")
+        Intent = autoclass("android.content.Intent")
+
+        intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("*/*")  # Select all file types, filter later if needed
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+
+        activity = PythonActivity.mActivity
+        activity.startActivityForResult(intent, 1)
 
     def on_button_click(self, instance):
         port = instance.text
