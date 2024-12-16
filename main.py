@@ -18,7 +18,7 @@ else:
 def request_permission():
     if platform == 'android':
        from android.permissions import request_permissions, Permission
-       request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+       request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
 
 class DemoApp(App):
     def __init__(self, *args, **kwargs):

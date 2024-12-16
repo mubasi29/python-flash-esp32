@@ -18,7 +18,7 @@ package.domain = id.sasinda
 source.dir = .
 
 # (list) Source files to include (leave empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,bin
+source.include_exts = py,png,jpg,kv,atlas,bin,xml
 
 # (list) List of inclusions using pattern matching
 source.include_patterns = res/*
@@ -272,7 +272,8 @@ android.minapi = 26
 #android.wakelock = False
 
 # (list) Android application meta-data to set (key=value format)
-#android.meta_data =
+android.meta_data = <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter" />
+    <meta-data android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" android:resource="@xml/device_filter" />
 
 # (list) Android library project to add (will be added in the
 # project.properties automatically.)
