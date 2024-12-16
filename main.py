@@ -23,19 +23,19 @@ def request_permission():
 class DemoApp(App):
     def __init__(self, *args, **kwargs):
         self.uiDict = {}
-        self.device_name_list = []
-        self.serial_port = None
-        self.read_thread = None
-        self.port_thread_lock = threading.Lock()
-        self.on_scan_device()
+        # self.device_name_list = []
+        # self.serial_port = None
+        # self.read_thread = None
+        # self.port_thread_lock = threading.Lock()
+        # self.on_scan_device()
         super(DemoApp, self).__init__(*args, **kwargs)
 
     def build(self):
         layout = BoxLayout(orientation='vertical')
-        ports = self.device_name_list
+        # ports = self.device_name_list
         
-        if len(ports) == 0:
-            layout.add_widget(Label(text = 'empty '))
+        # if len(ports) == 0:
+        layout.add_widget(Label(text = 'empty '))
 
         # if platform == "android":
         #     # Android-specific UI
@@ -43,14 +43,14 @@ class DemoApp(App):
         #     button.bind(on_press=self.select_android_file)
         #     layout.add_widget(button)
             
-        for btn_str in ports:
-            button = Button(
-                text=f"{btn_str}",
-                size_hint=(None, None),
-                size=("280dp", "50dp"),
-                on_release=self.on_button_click
-            )
-            layout.add_widget(button)
+        # for btn_str in ports:
+        #     button = Button(
+        #         text=f"{btn_str}",
+        #         size_hint=(None, None),
+        #         size=("280dp", "50dp"),
+        #         on_release=self.on_button_click
+        #     )
+        #     layout.add_widget(button)
         return layout
 
     def on_scan_device(self):
@@ -117,5 +117,5 @@ class DemoApp(App):
             print(f"\nError flashing ESP32: {e}")
 
 if __name__ == '__main__':
-    request_permission()
+    # request_permission()
     DemoApp().run()
