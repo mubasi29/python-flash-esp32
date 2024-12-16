@@ -272,8 +272,8 @@ android.minapi = 26
 #android.wakelock = False
 
 # (list) Android application meta-data to set (key=value format)
-android.meta_data = <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter" />
-    <meta-data android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" android:resource="@xml/device_filter" />
+#android.meta_data = <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter" />
+#    <meta-data android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" android:resource="@xml/device_filter" />
 
 # (list) Android library project to add (will be added in the
 # project.properties automatically.)
